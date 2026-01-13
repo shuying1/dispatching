@@ -1662,11 +1662,21 @@
             function initIframeLoadEvents() {
                 // 为现有的所有iframe添加加载事件
                 document.querySelectorAll('.module-iframe').forEach(iframe => {
+                    // 尝试处理加载成功和失败的情况
                     iframe.addEventListener('load', function () {
-                        const moduleId = this.id.split('-')[1];
-                        const loadingElement = document.getElementById(`loading-${moduleId}`);
-                        if (loadingElement) {
-                            loadingElement.classList.add('hidden');
+                        try {
+                            const moduleId = this.id.split('-')[1];
+                            const loadingElement = document.getElementById(`loading-${moduleId}`);
+                            if (loadingElement) {
+                                loadingElement.classList.add('hidden');
+                            }
+                        } catch (e) {
+                            // 如果无法访问iframe内容（例如跨域），仍尝试隐藏加载指示器
+                            const moduleId = this.id.split('-')[1];
+                            const loadingElement = document.getElementById(`loading-${moduleId}`);
+                            if (loadingElement) {
+                                loadingElement.classList.add('hidden');
+                            }
                         }
                     });
 
