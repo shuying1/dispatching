@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>动态大屏展示框架</title>
+    <title>财务智能驾驶舱</title>
     <!-- 正确的 Font Awesome 链接 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -891,7 +891,7 @@
 
 <body>
     <div class="dashboard-header">
-        <div class="dashboard-title">动态大屏展示系统</div>
+        <div class="dashboard-title">财务智能驾驶舱</div>
         <div class="dashboard-controls">
             <button class="control-btn add-btn" id="addModuleBtn">
                 <i class="fas fa-plus"></i> 添加模块
@@ -915,9 +915,6 @@
                     </div>
                     <div class="module-btn edit-btn" data-module-id="1">
                         <i class="fas fa-edit"></i>
-                    </div>
-                    <div class="module-btn close-btn" data-module-id="1">
-                        <i class="fas fa-times"></i>
                     </div>
                 </div>
             </div>
@@ -944,9 +941,6 @@
                     <div class="module-btn edit-btn" data-module-id="2">
                         <i class="fas fa-edit"></i>
                     </div>
-                    <div class="module-btn close-btn" data-module-id="2">
-                        <i class="fas fa-times"></i>
-                    </div>
                 </div>
             </div>
             <div class="module-content">
@@ -971,9 +965,6 @@
                     </div>
                     <div class="module-btn edit-btn" data-module-id="3">
                         <i class="fas fa-edit"></i>
-                    </div>
-                    <div class="module-btn close-btn" data-module-id="3">
-                        <i class="fas fa-times"></i>
                     </div>
                 </div>
             </div>
@@ -1519,7 +1510,8 @@
                 });
             });
 
-            // 模块关闭按钮
+            // 模块关闭按钮 - 已移除
+            /*
             document.querySelectorAll('.close-btn').forEach(btn => {
                 btn.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -1527,6 +1519,7 @@
                     removeModule(moduleId);
                 });
             });
+            */
 
             // 保存配置
             document.getElementById('saveConfig').addEventListener('click', saveModuleConfig);
@@ -1860,34 +1853,31 @@
                 module.id = `module-${moduleCounter}`;
                 module.innerHTML = `
                     <div class="module-header">
-                        <div class="module-title">${name}</div>
+                        <div class="module-title">\${name}</div>
                         <div class="module-actions">
-                            <div class="module-btn fullscreen-btn" data-module-id="${moduleCounter}" title="全屏显示">
+                            <div class="module-btn fullscreen-btn" data-module-id="\${moduleCounter}" title="全屏显示">
                                 <i class="fas fa-expand"></i>
                             </div>
-                            <div class="module-btn edit-btn" data-module-id="${moduleCounter}">
+                            <div class="module-btn edit-btn" data-module-id="\${moduleCounter}">
                                 <i class="fas fa-edit"></i>
-                            </div>
-                            <div class="module-btn close-btn" data-module-id="${moduleCounter}">
-                                <i class="fas fa-times"></i>
                             </div>
                         </div>
                     </div>
                     <div class="module-content">
-                        <div class="module-loading" id="loading-${moduleCounter}">
+                        <div class="module-loading" id="loading-\${moduleCounter}">
                             <div class="spinner"></div>
                             <div>加载中...</div>
                         </div>
-                        <iframe class="module-iframe" id="iframe-${moduleCounter}" src="${url}"></iframe>
+                        <iframe class="module-iframe" id="iframe-\${moduleCounter}" src="\${url}"></iframe>
                     </div>
                 `;
 
                 document.getElementById('dashboardContainer').appendChild(module);
 
                 // 添加事件监听器
-                const newIframe = module.querySelector(`#iframe-${moduleCounter}`);
-                const newLoading = module.querySelector(`#loading-${moduleCounter}`);
-                const newFullscreenBtn = module.querySelector(`.fullscreen-btn[data-module-id="${moduleCounter}"]`);
+                const newIframe = module.querySelector(`#iframe-\${moduleCounter}`);
+                const newLoading = module.querySelector(`#loading-\${moduleCounter}`);
+                const newFullscreenBtn = module.querySelector(`.fullscreen-btn[data-module-id="\${moduleCounter}"]`);
 
                 // 为新的iframe添加加载事件
                 newIframe.addEventListener('load', function () {
@@ -1917,11 +1907,14 @@
                     showModuleConfig(currentEditModuleId);
                 });
 
+                // 移除删除按钮的事件处理
+                /*
                 module.querySelector('.close-btn').addEventListener('click', function (e) {
                     e.stopPropagation();
                     const moduleId = this.getAttribute('data-module-id');
                     removeModule(moduleId);
                 });
+                */
 
                 // 设置拖拽
                 module.setAttribute('draggable', 'true');
@@ -1937,15 +1930,17 @@
                 moduleCounter++;
             }
 
-            // 移除模块
+            // 移除模块 - 已注释掉整个函数
+            /*
             function removeModule(moduleId) {
-                const module = document.getElementById(`module-${moduleId}`);
+                const module = document.getElementById(`module-\${moduleId}`);
                 if (module) {
                     if (confirm('确定要删除这个模块吗？')) {
                         module.remove();
                     }
                 }
             }
+            */
         });
 
         // 全屏功能函数
