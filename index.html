@@ -1009,9 +1009,36 @@
                         src="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&"></iframe> -->
 
                          <!-- 修改 iframe src 使用代理 -->
-<iframe class="module-iframe" id="iframe-2"
-    src="proxy.html"></iframe>
-                    </object>
+<!-- 创建一个中转页面，隐藏referer信息 -->
+<iframe 
+    class="module-iframe" 
+    id="iframe-2"
+    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+    srcdoc="
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='referrer' content='no-referrer'>
+            <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+            <style>
+                body, html { margin:0; padding:0; width:100%; height:100%; }
+            </style>
+            <script>
+                // 延迟加载，避免立即触发referer检查
+                setTimeout(function() {
+                    window.location.href = 'https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&';
+                }, 100);
+            </script>
+        </head>
+        <body>
+            <div style='text-align:center; padding:50px;'>
+                正在加载永功平台...
+            </div>
+        </body>
+        </html>
+    ">
+</iframe>
                 </div>
             </div>
 
