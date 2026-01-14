@@ -14,12 +14,21 @@
             box-sizing: border-box;
         }
 
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            /* 防止整个页面滚动 */
+        }
+
         body {
             background: linear-gradient(135deg, #1a2a6c, #2c3e50);
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .dashboard-header {
@@ -27,12 +36,11 @@
             backdrop-filter: blur(10px);
             padding: 15px 30px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
             display: flex;
             align-items: center;
             border-bottom: 1px solid rgba(100, 180, 255, 0.3);
+            flex-shrink: 0;
+            /* 防止头部被压缩 */
         }
 
         .dashboard-title {
@@ -89,38 +97,56 @@
             background: rgba(255, 152, 0, 0.4);
         }
 
+        .dashboard-main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            /* 防止内容撑开页面 */
+        }
+
         .dashboard-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
             gap: 25px;
             padding: 25px;
-            min-height: calc(100vh - 100px);
+            overflow-y: auto;
+            /* 中间内容区域滚动 */
+            flex: 1;
+            height: 100%;
+            /* 确保容器占满可用空间 */
         }
 
         /* 布局样式 */
         .dashboard-container.layout-1 {
             grid-template-columns: 1fr;
-            grid-auto-rows: minmax(700px, auto); /* 1列布局 - 最高的模块 */
+            grid-auto-rows: minmax(800px, auto);
+            /* 1列布局 - 更高的模块 */
         }
 
         .dashboard-container.layout-2 {
             grid-template-columns: repeat(2, 1fr);
-            grid-auto-rows: minmax(600px, auto); /* 2列布局 - 很高的模块 */
+            grid-auto-rows: minmax(730px, auto);
+            /* 2列布局 - 更高的模块 */
         }
 
         .dashboard-container.layout-3 {
             grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-            grid-auto-rows: minmax(500px, auto); /* 3列布局 - 较高的模块 */
+            grid-auto-rows: minmax(730px, auto);
+            /* 3列布局 - 更高的模块 */
         }
 
         .dashboard-container.layout-4 {
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: minmax(450px, auto); /* 4列布局 - 略微增加的高度 */
+            grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+            /* 4列布局 - 设置适合的最小宽度为440px */
+            grid-auto-rows: minmax(730px, auto);
+            /* 增加行高以适应内容 */
         }
 
         .dashboard-container.layout-auto {
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            grid-auto-rows: minmax(500px, auto); /* 自适应布局 - 使用稍高的默认值 */
+            grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+            /* 自适应布局 - 使用相同的最小宽度 */
+            grid-auto-rows: minmax(730px, auto);
+            /* 保持模块高度适中，为文字留出更多空间 */
         }
 
         .dashboard-module {
@@ -194,6 +220,8 @@
             flex: 1;
             position: relative;
             overflow: hidden;
+            /* 修改为 hidden，避免出现滚动条相关的视觉效果 */
+            min-height: 300px;
         }
 
         .module-iframe {
@@ -232,19 +260,29 @@
         }
 
         .dashboard-footer {
+            background: rgba(15, 35, 65, 0.85);
             text-align: center;
             padding: 20px;
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            background: rgba(0, 20, 40, 0.8);
+            font-size: 1.2rem;
             border-top: 1px solid rgba(100, 180, 255, 0.2);
+            flex-shrink: 0;
+            /* 防止底部被压缩 */
+        }
+
+        /* 在小屏幕设备上调整样式 */
+        @media (max-width: 600px) {
+            .dashboard-footer {
+                padding: 10px;
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 1200px) {
             .dashboard-container {
                 grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
             }
-            
+
             .dashboard-container.layout-4 {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -258,7 +296,7 @@
             .dashboard-title {
                 font-size: 1.8rem;
             }
-            
+
             .dashboard-container.layout-2,
             .dashboard-container.layout-3,
             .dashboard-container.layout-4 {
@@ -291,7 +329,7 @@
         .module-dragging {
             opacity: 0.8;
             transform: scale(1.05);
-            z-index: 1000;
+            position: relative;
             box-shadow: 0 0 20px rgba(100, 180, 255, 0.8);
         }
 
@@ -305,9 +343,15 @@
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            z-index: 9999; /* 设置更高的z-index以确保在全屏模式下也显示在最前 */
             border: 1px solid rgba(100, 180, 255, 0.3);
             display: none;
+            /* 去掉了z-index */
+        }
+
+        .layout-selector.active {
+            display: block;
+            z-index: 9999;
+            /* 仅在显示时设置最高层级 */
         }
 
         .layout-selector.active {
@@ -398,11 +442,17 @@
             border-radius: 15px;
             padding: 30px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            z-index: 9999; /* 设置更高的z-index以确保在全屏模式下也显示在最前 */
             width: 500px;
             max-width: 90%;
             border: 1px solid rgba(100, 180, 255, 0.3);
             display: none;
+            /* 去掉了z-index */
+        }
+
+        .module-config.active {
+            display: block;
+            z-index: 9999;
+            /* 仅在显示时设置最高层级 */
         }
 
         .module-config.active {
@@ -501,12 +551,14 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            z-index: 2999; /* 增加z-index以确保在全屏模式下也显示在最前 */
             display: none;
+            /* 去掉了z-index */
         }
 
         .overlay.active {
             display: block;
+            z-index: 9998;
+            /* 仅在激活时设置高层级 */
         }
 
 
@@ -795,7 +847,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            /* background: rgba(0, 0, 0, 0.7); */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -814,7 +866,8 @@
             border: 1px solid rgba(100, 180, 255, 0.3);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
-            z-index: 10000; /* 设置更高的z-index以确保在全屏模式下也显示在最前 */
+            z-index: 10000;
+            /* 设置更高的z-index以确保在全屏模式下也显示在最前 */
         }
 
         #fbs-settings-modal .modal-header {
@@ -902,186 +955,199 @@
         </div>
     </div>
 
-    <div class="dashboard-container" id="dashboardContainer">
-        <!-- 模块1 -->
-        <div class="dashboard-module" id="module-1">
-            <div class="module-header">
-                <div class="module-title">
-                    <i class="fas fa-chart-line"></i> 财务监控
-                </div>
-                <div class="module-actions">
-                    <div class="module-btn fullscreen-btn" data-module-id="1" title="全屏显示">
-                        <i class="fas fa-expand"></i>
+    <div class="dashboard-main">
+        <div class="dashboard-container" id="dashboardContainer">
+            <!-- 模块1 -->
+            <div class="dashboard-module" id="module-1">
+                <div class="module-header">
+                    <div class="module-title">
+                        <i class="fas fa-chart-line"></i> 财务监控
                     </div>
-                    <div class="module-btn edit-btn" data-module-id="1">
-                        <i class="fas fa-edit"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="module-content">
-                <div class="module-loading" id="loading-1">
-                    <div class="spinner"></div>
-                    <div>加载中...</div>
-                </div>
-                <iframe class="module-iframe" id="iframe-1"
-                    src="https://shuying1.github.io/accounts_receivable/"></iframe>
-            </div>
-        </div>
-
-        <!-- 模块2 -->
-        <div class="dashboard-module" id="module-2">
-            <div class="module-header">
-                <div class="module-title">
-                    <i class="fas fa-chart-pie"></i> 数据可视化
-                </div>
-                <div class="module-actions">
-                    <div class="module-btn fullscreen-btn" data-module-id="2" title="全屏显示">
-                        <i class="fas fa-expand"></i>
-                    </div>
-                    <div class="module-btn edit-btn" data-module-id="2">
-                        <i class="fas fa-edit"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="module-content">
-                <div class="module-loading" id="loading-2">
-                    <div class="spinner"></div>
-                    <div>加载中...</div>
-                </div>
-                <iframe class="module-iframe" id="iframe-2"
-                    src="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&"></iframe>
-            </div>
-        </div>
-
-        <!-- 模块3 -->
-        <div class="dashboard-module" id="module-3">
-            <div class="module-header">
-                <div class="module-title">
-                    <i class="fas fa-table"></i> 业务统计
-                </div>
-                <div class="module-actions">
-                    <div class="module-btn fullscreen-btn" data-module-id="3" title="全屏显示">
-                        <i class="fas fa-expand"></i>
-                    </div>
-                    <div class="module-btn edit-btn" data-module-id="3">
-                        <i class="fas fa-edit"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="module-content">
-                <div class="module-loading" id="loading-3">
-                    <div class="spinner"></div>
-                    <div>加载中...</div>
-                </div>
-                <iframe class="module-iframe" id="iframe-3" src="https://www.sohu.com"></iframe>
-            </div>
-        </div>
-
-        <!-- 模块4：财务报表系统 -->
-        <div class="dashboard-module" id="module-4">
-            <div class="module-header">
-                <div class="module-title">
-                    <i class="fas fa-file-invoice-dollar"></i> 财务报表系统
-                    <!-- <span class="beta-badge">外部链接</span> -->
-                </div>
-                <div class="module-actions">
-                    <div class="module-btn fullscreen-btn" data-module-id="4" title="全屏显示">
-                        <i class="fas fa-expand"></i>
-                    </div>
-                    <div class="module-btn settings-btn" onclick="openFbsSettings()" title="设置">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="module-btn fullscreen-btn-ext" onclick="openFbsFullscreen()" title="全屏打开">
-                        <i class="fas fa-external-link-alt"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="module-content">
-                <!-- 方案1: 增强型点击面板（推荐） -->
-                <div class="enhanced-panel" id="fbs-enhanced-panel">
-                    <div class="panel-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="panel-content">
-                        <h3>财务报表系统</h3>
-                        <p class="panel-description">
-                            查看最新的财务数据、利润表和现金流量表。
-                            <span class="last-updated" id="last-updated-time">
-                                最后访问: <span class="time">--:--</span>
-                            </span>
-                        </p>
-
-                        <div class="action-buttons">
-                            <button class="btn-primary" onclick="openFbs('standard')">
-                                <i class="fas fa-external-link-alt"></i> 打开财务报表
-                            </button>
-                            <button class="btn-secondary" onclick="openFbs('new_tab')">
-                                <i class="fas fa-window-restore"></i> 新标签页打开
-                            </button>
+                    <div class="module-actions">
+                        <div class="module-btn fullscreen-btn" data-module-id="1" title="全屏显示">
+                            <i class="fas fa-expand"></i>
                         </div>
+                        <div class="module-btn edit-btn" data-module-id="1">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="module-loading" id="loading-1">
+                        <div class="spinner"></div>
+                        <div>加载中...</div>
+                    </div>
+                    <!-- <iframe class="module-iframe" id="iframe-1"
+                    src="https://shuying1.github.io/accounts_receivable/"></iframe> -->
+                    <object type="text/html" data="https://shuying1.github.io/accounts_receivable/"
+                        class="module-iframe" id="iframe-1">
+                    </object>
+                </div>
+            </div>
 
-                        <div class="quick-stats">
-                            <div class="stat-item">
-                                <span class="stat-label">访问次数</span>
-                                <span class="stat-value" id="access-count">0</span>
+            <!-- 模块2 -->
+            <div class="dashboard-module" id="module-2">
+                <div class="module-header">
+                    <div class="module-title">
+                        <i class="fas fa-chart-pie"></i> 数据可视化
+                    </div>
+                    <div class="module-actions">
+                        <div class="module-btn fullscreen-btn" data-module-id="2" title="全屏显示">
+                            <i class="fas fa-expand"></i>
+                        </div>
+                        <div class="module-btn edit-btn" data-module-id="2">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="module-loading" id="loading-2">
+                        <div class="spinner"></div>
+                        <div>加载中...</div>
+                    </div>
+                    <!-- <iframe class="module-iframe" id="iframe-2"
+                        src="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&"></iframe> -->
+
+                         <object type="text/html" data="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&"
+                        class="module-iframe" id="iframe-2">
+                    </object>
+                </div>
+            </div>
+
+            <!-- 模块3 -->
+            <div class="dashboard-module" id="module-3">
+                <div class="module-header">
+                    <div class="module-title">
+                        <i class="fas fa-table"></i> 业务统计
+                    </div>
+                    <div class="module-actions">
+                        <div class="module-btn fullscreen-btn" data-module-id="3" title="全屏显示">
+                            <i class="fas fa-expand"></i>
+                        </div>
+                        <div class="module-btn edit-btn" data-module-id="3">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-content">
+                    <div class="module-loading" id="loading-3">
+                        <div class="spinner"></div>
+                        <div>加载中...</div>
+                    </div>
+                    <iframe class="module-iframe" id="iframe-3" src="https://www.sohu.com"></iframe>
+                </div>
+            </div>
+
+            <!-- 模块4：财务报表系统 -->
+            <div class="dashboard-module" id="module-4">
+                <div class="module-header">
+                    <div class="module-title">
+                        <i class="fas fa-file-invoice-dollar"></i> 财务报表系统
+                        <!-- <span class="beta-badge">外部链接</span> -->
+                    </div>
+                    <div class="module-actions">
+                        <div class="module-btn fullscreen-btn" data-module-id="4" title="全屏显示">
+                            <i class="fas fa-expand"></i>
+                        </div>
+                        <div class="module-btn settings-btn" onclick="openFbsSettings()" title="设置">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="module-btn fullscreen-btn-ext" onclick="openFbsFullscreen()" title="全屏打开">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-content">
+                    <!-- 方案1: 增强型点击面板（推荐） -->
+                    <div class="enhanced-panel" id="fbs-enhanced-panel">
+                        <div class="panel-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="panel-content">
+                            <h3><i class="fas fa-file-invoice-dollar"></i> 财务报表系统</h3>
+                            <p class="panel-description">
+                                查看最新的财务数据、利润表和现金流量表。
+                                <span class="last-updated" id="last-updated-time">
+                                    最后访问: <span class="time">--:--</span>
+                                </span>
+                            </p>
+
+                            <div class="action-buttons">
+                                <button class="btn-primary" onclick="openFbs('standard')">
+                                    <i class="fas fa-external-link-alt"></i> 打开财务报表
+                                </button>
+                                <button class="btn-secondary" onclick="openFbs('new_tab')">
+                                    <i class="fas fa-window-restore"></i> 新标签页打开
+                                </button>
                             </div>
-                            <div class="stat-item">
-                                <span class="stat-label">上次访问</span>
-                                <span class="stat-value" id="last-access">从未</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 方案2: 模拟iframe效果（视觉替代） -->
-                <div class="simulated-iframe" id="simulated-iframe" style="display:none;">
-                    <div class="iframe-header">
-                        <div class="iframe-title">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNOCAxNUE3IDcgMCAxMDggMUE3IDcgMCAwMDggMTVaIiBmaWxsPSIjMzM2NkMzIi8+PC9zdmc+"
-                                alt="FBS" class="iframe-favicon">
-                            <span>财务报表系统 (fbs.conch.cn)</span>
-                        </div>
-                        <div class="iframe-actions">
-                            <button class="iframe-btn" onclick="openFbs('simulated')" title="打开">
-                                <i class="fas fa-external-link-alt"></i>
-                            </button>
-                            <button class="iframe-btn" onclick="closeSimulatedIframe()" title="关闭">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="iframe-preview" onclick="openFbs('simulated')">
-                        <div class="preview-content">
-                            <div class="preview-placeholder">
-                                <i class="fas fa-lock"></i>
-                                <p>点击进入受保护的系统</p>
-                                <small>此页面因安全策略无法直接嵌入</small>
+                            <div class="quick-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">访问次数</span>
+                                    <span class="stat-value" id="access-count">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">上次访问</span>
+                                    <span class="stat-value" id="last-access">从未</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="preview-overlay">
-                            <button class="open-btn" onclick="openFbs('simulated')">
-                                <i class="fas fa-external-link-alt"></i> 点击打开
-                            </button>
+                    </div>
+
+                    <!-- 方案2: 模拟iframe效果（视觉替代） -->
+                    <div class="simulated-iframe" id="simulated-iframe" style="display:none;">
+                        <div class="iframe-header">
+                            <div class="iframe-title">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNOCAxNUE3IDcgMCAxMDggMUE3IDcgMCAwMDggMTVaIiBmaWxsPSIjMzM2NkMzIi8+PC9zdmc+"
+                                    alt="FBS" class="iframe-favicon">
+                                <span><i class="fas fa-file-invoice-dollar"></i> 财务报表系统 (fbs.conch.cn)</span>
+                            </div>
+                            <div class="iframe-actions">
+                                <button class="iframe-btn" onclick="openFbs('simulated')" title="打开">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                                <button class="iframe-btn" onclick="closeSimulatediframe()" title="关闭">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="iframe-preview" onclick="openFbs('simulated')">
+                            <div class="preview-content">
+                                <div class="preview-placeholder">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <p>点击进入财务报表系统</p>
+                                    <small>此页面因安全策略无法直接嵌入</small>
+                                </div>
+                            </div>
+                            <div class="preview-overlay">
+                                <button class="open-btn" onclick="openFbs('simulated')">
+                                    <i class="fas fa-external-link-alt"></i> 点击打开
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 方案选择器 -->
-                <div class="view-toggle">
-                    <button class="toggle-btn active" onclick="switchView('panel')">
-                        <i class="fas fa-th-large"></i> 面板视图
-                    </button>
-                    <button class="toggle-btn" onclick="switchView('iframe')">
-                        <i class="fas fa-tv"></i> 模拟嵌入
-                    </button>
+                    <!-- 方案选择器 -->
+                    <div class="view-toggle">
+                        <button class="toggle-btn active" onclick="switchView('panel')">
+                            <i class="fas fa-th-large"></i> 面板视图
+                        </button>
+                        <button class="toggle-btn" onclick="switchView('iframe')">
+                            <i class="fas fa-tv"></i> 模拟嵌入
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="dashboard-footer">
-        <p>动态大屏展示系统 | 支持动态添加模块、自定义布局、内嵌网页展示</p>
+        &copy; <span id="current-year"></span> 安徽海螺财务服务有限公司 版权所有
+        <script>
+            // 设置当前年份
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        </script>
     </div>
 
     <!-- 布局选择器 -->
@@ -1199,13 +1265,13 @@
                     break;
                 case 'simulated':
                     // 模拟iframe的打开效果
-                    const simulatedIframe = document.getElementById('simulated-iframe');
-                    if (simulatedIframe) {
-                        simulatedIframe.style.opacity = '0.5';
+                    const simulatediframe = document.getElementById('simulated-iframe');
+                    if (simulatediframe) {
+                        simulatediframe.style.opacity = '0.5';
                         setTimeout(() => {
                             window.open(url, '_blank');
                             setTimeout(() => {
-                                simulatedIframe.style.opacity = '1';
+                                simulatediframe.style.opacity = '1';
                             }, 500);
                         }, 300);
                     }
@@ -1344,7 +1410,7 @@
             const autoOpen = document.getElementById('auto-open');
             const recordHistory = document.getElementById('record-history');
             const openMethod = document.getElementById('open-method');
-            
+
             if (autoOpen) autoOpen.checked = settings.autoOpen;
             if (recordHistory) recordHistory.checked = settings.recordHistory;
             if (openMethod) openMethod.value = settings.openMethod;
@@ -1354,9 +1420,9 @@
             const autoOpen = document.getElementById('auto-open');
             const recordHistory = document.getElementById('record-history');
             const openMethod = document.getElementById('open-method');
-            
+
             if (!autoOpen || !recordHistory || !openMethod) return;
-            
+
             const settings = {
                 autoOpen: autoOpen.checked,
                 recordHistory: recordHistory.checked,
@@ -1393,7 +1459,7 @@
             }
         }
 
-        function closeSimulatedIframe() {
+        function closeSimulatediframe() {
             switchView('panel');
         }
 
@@ -1406,24 +1472,24 @@
             let currentLayout = 3;
 
             // 为容器添加默认布局类
-            document.getElementById('dashboardContainer').classList.add('layout-2');
+            document.getElementById('dashboardContainer').classList.add('layout-auto');
 
             // 当前编辑的模块ID
             let currentEditModuleId = null;
 
             // 初始化现有iframe的加载事件
-            initIframeLoadEvents();
+            initiframeLoadEvents();
 
             // 添加模块按钮
             document.getElementById('addModuleBtn').addEventListener('click', showModuleConfig);
-            
+
             // 更新全屏按钮图标
             function updateFullscreenButton() {
-                const fullscreenElement = document.fullscreenElement || 
-                                         document.webkitFullscreenElement || 
-                                         document.mozFullScreenElement || 
-                                         document.msFullscreenElement;
-                
+                const fullscreenElement = document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement;
+
                 document.querySelectorAll('.fullscreen-btn').forEach(btn => {
                     const moduleId = btn.getAttribute('data-module-id');
                     if (fullscreenElement && fullscreenElement.id === `module-${moduleId}`) {
@@ -1435,17 +1501,17 @@
                     }
                 });
             }
-            
+
             // 切换全屏模式
             function toggleFullscreen(moduleId) {
                 const module = document.getElementById(`module-${moduleId}`);
                 if (!module) return;
-                
-                const isCurrentlyFullscreen = document.fullscreenElement || 
-                                            document.webkitFullscreenElement || 
-                                            document.mozFullScreenElement || 
-                                            document.msFullscreenElement;
-                
+
+                const isCurrentlyFullscreen = document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement;
+
                 if (isCurrentlyFullscreen) {
                     // 退出全屏
                     if (document.exitFullscreen) {
@@ -1528,22 +1594,22 @@
             document.getElementById('cancelConfig').addEventListener('click', hideModuleConfig);
 
             // 全屏状态变化监听
-            document.addEventListener('fullscreenchange', function() {
+            document.addEventListener('fullscreenchange', function () {
                 updateFullscreenButton();
-                
+
                 // 在进入全屏模式时，隐藏所有弹窗，因为全屏元素会置于顶层
                 if (document.fullscreenElement) {
                     // 检查是否有任何弹窗处于活动状态，如果有则暂时记住它们的状态
                     const configPopup = document.getElementById('moduleConfig');
                     const layoutPopup = document.getElementById('layoutSelector');
-                    
-                    if(configPopup.classList.contains('active')) {
+
+                    if (configPopup.classList.contains('active')) {
                         // 添加一个标记表明这个弹窗之前是打开的
                         configPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideModuleConfig();
                     }
-                    
-                    if(layoutPopup.classList.contains('active')) {
+
+                    if (layoutPopup.classList.contains('active')) {
                         layoutPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideLayoutSelector();
                     }
@@ -1551,21 +1617,21 @@
                     // 退出全屏模式时的处理
                 }
             });
-            
-            document.addEventListener('webkitfullscreenchange', function() {
+
+            document.addEventListener('webkitfullscreenchange', function () {
                 updateFullscreenButton();
-                
+
                 // 在进入全屏模式时，隐藏所有弹窗，因为全屏元素会置于顶层
                 if (document.webkitFullscreenElement) {
                     const configPopup = document.getElementById('moduleConfig');
                     const layoutPopup = document.getElementById('layoutSelector');
-                    
-                    if(configPopup.classList.contains('active')) {
+
+                    if (configPopup.classList.contains('active')) {
                         configPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideModuleConfig();
                     }
-                    
-                    if(layoutPopup.classList.contains('active')) {
+
+                    if (layoutPopup.classList.contains('active')) {
                         layoutPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideLayoutSelector();
                     }
@@ -1573,21 +1639,21 @@
                     // 退出全屏模式时的处理
                 }
             });
-            
-            document.addEventListener('mozfullscreenchange', function() {
+
+            document.addEventListener('mozfullscreenchange', function () {
                 updateFullscreenButton();
-                
+
                 // 在进入全屏模式时，隐藏所有弹窗，因为全屏元素会置于顶层
                 if (document.mozFullScreenElement) {
                     const configPopup = document.getElementById('moduleConfig');
                     const layoutPopup = document.getElementById('layoutSelector');
-                    
-                    if(configPopup.classList.contains('active')) {
+
+                    if (configPopup.classList.contains('active')) {
                         configPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideModuleConfig();
                     }
-                    
-                    if(layoutPopup.classList.contains('active')) {
+
+                    if (layoutPopup.classList.contains('active')) {
                         layoutPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideLayoutSelector();
                     }
@@ -1595,21 +1661,21 @@
                     // 退出全屏模式时的处理
                 }
             });
-            
-            document.addEventListener('msfullscreenchange', function() {
+
+            document.addEventListener('msfullscreenchange', function () {
                 updateFullscreenButton();
-                
+
                 // 在进入全屏模式时，隐藏所有弹窗，因为全屏元素会置于顶层
                 if (document.msFullscreenElement) {
                     const configPopup = document.getElementById('moduleConfig');
                     const layoutPopup = document.getElementById('layoutSelector');
-                    
-                    if(configPopup.classList.contains('active')) {
+
+                    if (configPopup.classList.contains('active')) {
                         configPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideModuleConfig();
                     }
-                    
-                    if(layoutPopup.classList.contains('active')) {
+
+                    if (layoutPopup.classList.contains('active')) {
                         layoutPopup.dataset.wasOpenBeforeFullscreen = "true";
                         hideLayoutSelector();
                     }
@@ -1649,7 +1715,7 @@
 
             // 全屏功能
             document.querySelectorAll('.fullscreen-btn').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const moduleId = this.getAttribute('data-module-id') || this.closest('.dashboard-module').id.replace('module-', '');
                     toggleFullscreen(`module-${moduleId}`);
                 });
@@ -1659,36 +1725,48 @@
             setupDragAndDrop();
 
             // 初始化iframe加载事件
-            function initIframeLoadEvents() {
+            function initiframeLoadEvents() {
                 // 为现有的所有iframe添加加载事件
                 document.querySelectorAll('.module-iframe').forEach(iframe => {
-                    // 尝试处理加载成功和失败的情况
-                    iframe.addEventListener('load', function () {
-                        try {
-                            const moduleId = this.id.split('-')[1];
-                            const loadingElement = document.getElementById(`loading-${moduleId}`);
-                            if (loadingElement) {
+                    // 为iframe添加唯一标识，避免重复绑定
+                    const moduleId = iframe.id.split('-')[1];
+                    const loadingElement = document.getElementById(`loading-${moduleId}`);
+
+                    // 确保只绑定一次事件
+                    if (iframe.dataset.loadedEventBound) return;
+                    iframe.dataset.loadedEventBound = 'true';
+
+                    // 添加加载成功事件
+                    const handleLoad = function () {
+                        if (loadingElement) {
+                            // 添加延迟确保内容渲染完成
+                            setTimeout(() => {
                                 loadingElement.classList.add('hidden');
-                            }
-                        } catch (e) {
-                            // 如果无法访问iframe内容（例如跨域），仍尝试隐藏加载指示器
-                            const moduleId = this.id.split('-')[1];
-                            const loadingElement = document.getElementById(`loading-${moduleId}`);
-                            if (loadingElement) {
-                                loadingElement.classList.add('hidden');
-                            }
+                            }, 800);
                         }
-                    });
+                    };
+
+                    // 添加加载错误事件
+                    const handleError = function () {
+                        if (loadingElement) {
+                            // 即使出错也隐藏加载指示器
+                            setTimeout(() => {
+                                loadingElement.classList.add('hidden');
+                            }, 1500);
+                        }
+                    };
+
+                    iframe.addEventListener('load', handleLoad);
+                    iframe.addEventListener('error', handleError);
 
                     // 检查iframe是否已经加载完成
-                    if (iframe.complete) {
-                        const moduleId = iframe.id.split('-')[1];
-                        const loadingElement = document.getElementById(`loading-${moduleId}`);
-                        if (loadingElement) {
-                            loadingElement.classList.add('hidden');
-                        }
+                    if (iframe.contentDocument &&
+                        iframe.contentDocument.readyState === 'complete' &&
+                        loadingElement) {
+                        loadingElement.classList.add('hidden');
                     }
                 });
+
             }
 
             // 设置拖拽功能
@@ -1762,7 +1840,7 @@
                 container.classList.remove('layout-1', 'layout-2', 'layout-3', 'layout-4', 'layout-auto');
 
                 // 根据当前选择的布局添加相应的CSS类
-                switch(currentLayout) {
+                switch (currentLayout) {
                     case '1':
                         container.classList.add('layout-1');
                         break;
@@ -1779,8 +1857,8 @@
                         container.classList.add('layout-auto');
                         break;
                     default:
-                        // 如果是默认的3列布局
-                        container.classList.add('layout-3');
+                        // 如果是默认的2列布局
+                        container.classList.add('layout-auto');
                 }
 
                 hideLayoutSelector();
@@ -1861,42 +1939,36 @@
                 const module = document.createElement('div');
                 module.className = 'dashboard-module';
                 module.id = `module-${moduleCounter}`;
+
+                // 创建模块内容
                 module.innerHTML = `
                     <div class="module-header">
-                        <div class="module-title">\${name}</div>
+                        <div class="module-title">${name}</div>
                         <div class="module-actions">
-                            <div class="module-btn fullscreen-btn" data-module-id="\${moduleCounter}" title="全屏显示">
+                            <div class="module-btn fullscreen-btn" data-module-id="${moduleCounter}" title="全屏显示">
                                 <i class="fas fa-expand"></i>
                             </div>
-                            <div class="module-btn edit-btn" data-module-id="\${moduleCounter}">
+                            <div class="module-btn edit-btn" data-module-id="${moduleCounter}">
                                 <i class="fas fa-edit"></i>
                             </div>
                         </div>
                     </div>
                     <div class="module-content">
-                        <div class="module-loading" id="loading-\${moduleCounter}">
+                        <div class="module-loading" id="loading-${moduleCounter}">
                             <div class="spinner"></div>
                             <div>加载中...</div>
                         </div>
-                        <iframe class="module-iframe" id="iframe-\${moduleCounter}" src="\${url}"></iframe>
+                        <iframe class="module-iframe" id="iframe-${moduleCounter}" src="${url}"></iframe>
                     </div>
                 `;
 
                 document.getElementById('dashboardContainer').appendChild(module);
 
-                // 添加事件监听器
-                const newIframe = module.querySelector(`#iframe-\${moduleCounter}`);
-                const newLoading = module.querySelector(`#loading-\${moduleCounter}`);
-                const newFullscreenBtn = module.querySelector(`.fullscreen-btn[data-module-id="\${moduleCounter}"]`);
+                // 为新模块添加功能
+                const newFullscreenBtn = module.querySelector(`.fullscreen-btn[data-module-id="${moduleCounter}"]`);
+                const newEditBtn = module.querySelector(`.edit-btn[data-module-id="${moduleCounter}"]`);
 
-                // 为新的iframe添加加载事件
-                newIframe.addEventListener('load', function () {
-                    if (newLoading) {
-                        newLoading.classList.add('hidden');
-                    }
-                });
-
-                // 为新的全屏按钮添加事件
+                // 添加全屏功能
                 if (newFullscreenBtn) {
                     newFullscreenBtn.addEventListener('click', function (e) {
                         e.stopPropagation();
@@ -1904,27 +1976,17 @@
                     });
                 }
 
-                // 检查iframe是否已经加载完成
-                if (newIframe.complete) {
-                    if (newLoading) {
-                        newLoading.classList.add('hidden');
-                    }
+                // 添加编辑功能
+                if (newEditBtn) {
+                    newEditBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        currentEditModuleId = this.getAttribute('data-module-id');
+                        showModuleConfig(currentEditModuleId);
+                    });
                 }
 
-                module.querySelector('.edit-btn').addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    currentEditModuleId = this.getAttribute('data-module-id');
-                    showModuleConfig(currentEditModuleId);
-                });
-
-                // 移除删除按钮的事件处理
-                /*
-                module.querySelector('.close-btn').addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    const moduleId = this.getAttribute('data-module-id');
-                    removeModule(moduleId);
-                });
-                */
+                // 为新iframe添加加载事件（使用统一的初始化函数）
+                initiframeLoadEvents();
 
                 // 设置拖拽
                 module.setAttribute('draggable', 'true');
@@ -1989,9 +2051,9 @@
 
         function handleFullscreenChange() {
             const fullscreenElement = document.fullscreenElement ||
-                                    document.webkitFullscreenElement ||
-                                    document.mozFullScreenElement ||
-                                    document.msFullscreenElement;
+                document.webkitFullscreenElement ||
+                document.mozFullScreenElement ||
+                document.msFullscreenElement;
 
             if (fullscreenElement) {
                 // 进入全屏时的操作
