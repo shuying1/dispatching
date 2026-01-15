@@ -14,23 +14,87 @@
             height: 100%;
             overflow: hidden;
         }
+        
+        .redirect-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+        }
+        
+        .manual-redirect-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .blank-page-button {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
+    
+    
+    <!-- 添加手动跳转按钮 -->
+    <button class="manual-redirect-button" onclick="manualRedirect()">点击跳转到目标页面</button>
+    
+    
+    
     <!-- 使用 JavaScript 重定向 -->
     <script>
-        window.location.href = "https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&";
+      
+        
+        // 定义手动跳转函数
+        function manualRedirect() {
+            // 添加locale参数以消除国际化警告
+            
+            const redirectUrl = "https://fbs.conch.cn/iuap-data-analytic/ucf-wh/analysis.html#/ANALYSIS/share/pplEKhkA-tK1TuYUERz6rIe-OWlZbUI4TSR6WR5IPFioKPU84AQHhVLX_wJ9fbwppmbcvwvOKwNmNgDCGcJgistli7j1fvcmkSXqAPtJy_dRw2q60MdGy05MgiHII2uk4U83D8e9jzso5H9s5fAfrjb6UVyYtPp5I7x6F8wIg1Hc14-2IaqTmtQ_YWWG0fdTKe34zwnMBHGPy--DnOQnig?hb=a_edit,a_change,a_tset,a_lset,a_delete,export&hdtopbar&hb=close&havePublishPermission=true&serviceCode=74cc09af-3c8d-45e9-8778-41b49cfc544a&isPC=1&&shareToken=pplEKhkA-tK1TuYUERz6rIe-OWlZbUI4TSR6WR5IPFioKPU84AQHhVLX_wJ9fbwppmbcvwvOKwNmNgDCGcJgistli7j1fvcmkSXqAPtJy_dRw2q60MdGy05MgiHII2uk4U83D8e9jzso5H9s5fAfrjb6UVyYtPp5I7x6F8wIg1Hc14-2IaqTmtQ_YWWG0fdTKe34zwnMBHGPy--DnOQnig&shareObjId=74cc09af-3c8d-45e9-8778-41b49cfc544a&locale=zh_CN&shareType=ANALYSIS" ;
+            
+            // 设置UBA上报地址（私有化部署必需）
+            if (typeof uba_init !== 'undefined') {
+                uba_init.reportPath = '/uba/report'; // 根据实际路径配置
+            }
+            
+            // 在新标签页中打开目标页面
+            window.open(redirectUrl, '_blank');
+           
+        }
+        
+     
+        
+        
+        // 可以选择是否保留自动重定向，如果不需要可以注释掉下面这一行
+       
     </script>
-    
-    <!-- 备用方案：显示提示 -->
-    <div id="fallback" style="display:none; padding: 20px; text-align: center;">
-        <h3>无法直接加载永功平台</h3>
-        <p>由于安全策略限制，该内容无法直接嵌入。</p>
-        <a href="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&" 
-           target="_blank" 
-           style="color: #4facfe; text-decoration: none;">
-            <i class="fas fa-external-link-alt"></i> 在新标签页中打开
-        </a>
-    </div>
 </body>
 </html>
