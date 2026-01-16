@@ -43,15 +43,33 @@
             /* 防止头部被压缩 */
         }
 
+        .dashboard-logo {
+            margin-left: 20px;
+        }
+
+        .dashboard-logo img {
+            vertical-align: middle;
+            height: 46px;
+            width: auto;
+        }
+
         .dashboard-title {
             font-size: 2.2rem;
+            /* 设置字体大小为2.2倍根元素字体大小 */
             font-weight: bold;
+            /* 设置字体为粗体 */
             background: linear-gradient(to right, #4facfe, #00f2fe);
+            /* 创建从左到右的渐变背景，颜色从#4facfe过渡到#00f2fe */
             -webkit-background-clip: text;
+            /* 将背景裁剪为文本形状（Webkit浏览器特有属性） */
             -webkit-text-fill-color: transparent;
+            /* 将文本填充色设为透明（Webkit浏览器特有属性） */
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            /* 添加阴影效果：无水平偏移，向下偏移2px，模糊半径8px，黑色透明度20% */
             flex: 1;
+            /* 在弹性布局中占据剩余空间 */
             text-align: center;
+            /* 文本居中对齐 */
         }
 
         .dashboard-controls {
@@ -73,20 +91,6 @@
             gap: 8px;
         }
 
-        .control-btn:hover {
-            background: rgba(100, 180, 255, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .control-btn.add-btn {
-            background: rgba(76, 175, 80, 0.2);
-            border-color: rgba(76, 175, 80, 0.5);
-        }
-
-        .control-btn.add-btn:hover {
-            background: rgba(76, 175, 80, 0.4);
-        }
 
         .control-btn.layout-btn {
             background: rgba(255, 152, 0, 0.2);
@@ -107,8 +111,8 @@
         .dashboard-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
-            gap: 25px;
-            padding: 25px;
+            gap: 20px;
+            padding: 15px;
             overflow-y: auto;
             /* 中间内容区域滚动 */
             flex: 1;
@@ -130,20 +134,20 @@
         }
 
         .dashboard-container.layout-3 {
-            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             grid-auto-rows: minmax(730px, auto);
             /* 3列布局 - 更高的模块 */
         }
 
         .dashboard-container.layout-4 {
-            grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+            grid-template-columns: repeat(4, 1rf);
             /* 4列布局 - 设置适合的最小宽度为440px */
             grid-auto-rows: minmax(730px, auto);
             /* 增加行高以适应内容 */
         }
 
         .dashboard-container.layout-auto {
-            grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             /* 自适应布局 - 使用相同的最小宽度 */
             grid-auto-rows: minmax(730px, auto);
             /* 保持模块高度适中，为文字留出更多空间 */
@@ -944,11 +948,13 @@
 
 <body>
     <div class="dashboard-header">
-        <div class="dashboard-title">财务智能驾驶舱</div>
+        <div class="dashboard-logo">
+            <img src="./images/logo.png" alt="Logo" ">
+        </div>
+        <div class=" dashboard-title">
+            财务智能驾驶舱
+        </div>
         <div class="dashboard-controls">
-            <button class="control-btn add-btn" id="addModuleBtn">
-                <i class="fas fa-plus"></i> 添加模块
-            </button>
             <button class="control-btn layout-btn" id="layoutBtn">
                 <i class="fas fa-th-large"></i> 布局设置
             </button>
@@ -979,21 +985,22 @@
                     </div>
                     <!-- 修改iframe src，添加locale参数 -->
                     <iframe class="module-iframe" id="iframe-1"
-                            src="proxy.html?locale=zh_CN"></iframe>
+                        src="https://shuying1.github.io/assert_management2/"></iframe>
                 </div>
             </div>
 
-            <!-- 模块2 -->
+
+            <!-- 模块1 -->
             <div class="dashboard-module" id="module-2">
                 <div class="module-header">
                     <div class="module-title">
-                        <i class="fas fa-chart-pie"></i> 数据可视化
+                        <i class="fas fa-chart-line"></i> 财务监控
                     </div>
                     <div class="module-actions">
-                        <div class="module-btn fullscreen-btn" data-module-id="2" title="全屏显示">
+                        <div class="module-btn fullscreen-btn" data-module-id="1" title="全屏显示">
                             <i class="fas fa-expand"></i>
                         </div>
-                        <div class="module-btn edit-btn" data-module-id="2">
+                        <div class="module-btn edit-btn" data-module-id="1">
                             <i class="fas fa-edit"></i>
                         </div>
                     </div>
@@ -1003,42 +1010,14 @@
                         <div class="spinner"></div>
                         <div>加载中...</div>
                     </div>
-                    <!-- <iframe class="module-iframe" id="iframe-2"
-                        src="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=K0g4yhc7S3YPQN&"></iframe> -->
-
-                    <!-- 修改 iframe src 使用代理 -->
-                    <!-- 创建一个中转页面，隐藏referer信息 -->
+                    <!-- 修改iframe src，添加locale参数 -->
                     <iframe class="module-iframe" id="iframe-2"
-                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals" srcdoc="
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <meta charset='UTF-8'>
-                            <meta name='referrer' content='no-referrer'>
-                            <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-                            <style>
-                                body, html { margin:0; padding:0; width:100%; height:100%; }
-                            </style>
-                            <script>
-                                // 延迟加载，避免立即触发referer检查
-                                setTimeout(function() {
-                                    window.location.href = 'https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=D0SH1u8mc5PnYs';
-                                }, 100);
-                            </script>
-                        </head>
-                        <body>
-                            <div style='text-align:center; padding:50px;'>
-                                正在加载永功平台...
-                            </div>
-                        </body>
-                        </html>
-                    ">
-                    </iframe>
+                        src="https://im.yungongplat.com/weboffice/office/d/357084445196288?share_id=D0SH1u8mc5PnYs"></iframe>
                 </div>
             </div>
 
 
-           
+
 
             <!-- 模块3 -->
             <!-- <div class="dashboard-module" id="module-3">
@@ -1065,9 +1044,9 @@
             </div> -->
 
             <!-- 模块4：财务报表系统 -->
-            
-           
-            
+
+
+
         </div>
     </div>
 
@@ -1408,9 +1387,6 @@
 
             // 初始化现有iframe的加载事件
             initiframeLoadEvents();
-
-            // 添加模块按钮
-            document.getElementById('addModuleBtn').addEventListener('click', showModuleConfig);
 
             // 更新全屏按钮图标
             function updateFullscreenButton() {
@@ -1856,79 +1832,11 @@
                         currentEditModuleId = null;
                     }
                 } else {
-                    // 创建新模块
-                    createNewModule(moduleName, moduleUrl);
+                    // 创建新模块 - 现在只允许通过编辑现有模块来更改
+                    alert("当前版本不支持添加新模块，请联系管理员");
                 }
 
                 hideModuleConfig();
-            }
-
-            // 创建新模块
-            function createNewModule(name, url) {
-                const module = document.createElement('div');
-                module.className = 'dashboard-module';
-                module.id = `module-${moduleCounter}`;
-
-                // 创建模块内容
-                module.innerHTML = `
-                    <div class="module-header">
-                        <div class="module-title">${name}</div>
-                        <div class="module-actions">
-                            <div class="module-btn fullscreen-btn" data-module-id="${moduleCounter}" title="全屏显示">
-                                <i class="fas fa-expand"></i>
-                            </div>
-                            <div class="module-btn edit-btn" data-module-id="${moduleCounter}">
-                                <i class="fas fa-edit"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <div class="module-loading" id="loading-${moduleCounter}">
-                            <div class="spinner"></div>
-                            <div>加载中...</div>
-                        </div>
-                        <iframe class="module-iframe" id="iframe-${moduleCounter}" src="${url}"></iframe>
-                    </div>
-                `;
-
-                document.getElementById('dashboardContainer').appendChild(module);
-
-                // 为新模块添加功能
-                const newFullscreenBtn = module.querySelector(`.fullscreen-btn[data-module-id="${moduleCounter}"]`);
-                const newEditBtn = module.querySelector(`.edit-btn[data-module-id="${moduleCounter}"]`);
-
-                // 添加全屏功能
-                if (newFullscreenBtn) {
-                    newFullscreenBtn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        toggleFullscreen(moduleCounter);
-                    });
-                }
-
-                // 添加编辑功能
-                if (newEditBtn) {
-                    newEditBtn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        currentEditModuleId = this.getAttribute('data-module-id');
-                        showModuleConfig(currentEditModuleId);
-                    });
-                }
-
-                // 为新iframe添加加载事件（使用统一的初始化函数）
-                initiframeLoadEvents();
-
-                // 设置拖拽
-                module.setAttribute('draggable', 'true');
-                module.addEventListener('dragstart', function (e) {
-                    e.dataTransfer.setData('text/plain', this.id);
-                    this.classList.add('module-dragging');
-                });
-
-                module.addEventListener('dragend', function () {
-                    this.classList.remove('module-dragging');
-                });
-
-                moduleCounter++;
             }
 
             // 移除模块 - 已注释掉整个函数
